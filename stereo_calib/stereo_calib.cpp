@@ -58,14 +58,16 @@ int _tmain(int argc, char **argv)
 		if(list[i] == "VMG-CAM-R")
 		{
 			right_index = i;
+			VI.setupDevice(i, FRAME_WIDTH, FRAME_HEIGHT, VI_COMPOSITE);
 		}
 
 		if(list[i] == "VMG-CAM-L")
 		{
 			left_index = i;
+			VI.setupDevice(i, FRAME_WIDTH, FRAME_HEIGHT, VI_COMPOSITE);
 		}
-
-		VI.setupDevice(i, FRAME_WIDTH, FRAME_HEIGHT, VI_COMPOSITE); 
+		
+		// 
 
 	}
 
@@ -73,8 +75,8 @@ int _tmain(int argc, char **argv)
 	cout<<"right index : "<<right_index<<endl;
 
 	
-	VI.setupDevice(left_index, FRAME_WIDTH, FRAME_HEIGHT, VI_COMPOSITE); 
-	VI.setupDevice(right_index, FRAME_WIDTH, FRAME_HEIGHT, VI_COMPOSITE);
+	//VI.setupDevice(left_index, FRAME_WIDTH, FRAME_HEIGHT, VI_COMPOSITE); 
+	//VI.setupDevice(right_index, FRAME_WIDTH, FRAME_HEIGHT, VI_COMPOSITE);
 	
 
 
@@ -95,7 +97,7 @@ int _tmain(int argc, char **argv)
 	int count = 0;
 
 #ifdef LOCAL_IMAGE
-	count = 30;
+	count = 19;
 #else
 	//capture images
 	for(;;)
@@ -106,13 +108,17 @@ int _tmain(int argc, char **argv)
 		//cap>>frame;
 		//cap_right>>frame_right;
 
-		if(VI.isFrameNew(0))
+	if (VI.isFrameNew(left_index))
 		{
 			VI.getPixels(left_index, frame.data, false, true);
-			VI.getPixels(right_index, frame_right.data, false, true);
+			//VI.getPixels(right_index, frame_right.data, false, true);
 		}
 
-
+	if (VI.isFrameNew(right_index))
+	{
+		//VI.getPixels(left_index, frame.data, false, true);
+		VI.getPixels(right_index, frame_right.data, false, true);
+	}
 
 #ifdef CAMERA_FLIP
 		flip(frame.t(), frame, 0);
@@ -170,6 +176,8 @@ int _tmain(int argc, char **argv)
 		resize(left_temp,left_temp,Size(left_temp.size().width/2,left_temp.size().height/2));
 		resize(right_temp,right_temp,Size(right_temp.size().width/2,right_temp.size().height/2));
 #endif
+		std::cout << i << " "<<left_temp.channels()<<endl;
+		std::cout << i << " " << right_temp.channels() << endl;
 
 		Mat left_temp_gray;
 		Mat right_temp_gray;
@@ -353,8 +361,8 @@ int _tmain(int argc, char **argv)
 	fs << "MX1" << mx1 << "MX2" << mx2 << "MY1" << my1 << "MY2" << my2;
 	fs.release();
 
-	VI.stopDevice(0);
-	VI.stopDevice(1);
+	VI.stopDevice(left_index);
+	VI.stopDevice(right_index);
 
 	delete[] image_calib_list;
 	return 0;
