@@ -296,7 +296,7 @@ int _tmain(int argc, char **argv)
 		//cap>>frame;
 		//cap_right>>frame_right;
 
-		if(VI.isFrameNew(0))
+		if(VI.isFrameNew(left_index))
 		{
 			VI.getPixels(left_index, frame.data, false, true);
 			VI.getPixels(right_index, frame_right.data, false, true);
@@ -511,8 +511,8 @@ void StereoCalib(Mat * imagelist, Size boardSize,int number_calib_image,float sq
 
 	
 #ifdef FISHEYE
-	int flag1 = 0;
-	flag1 = fisheye::CALIB_RECOMPUTE_EXTRINSIC|fisheye::CALIB_FIX_SKEW|fisheye::CALIB_FIX_K1
+	//int flag1 = 0;
+	//flag1 = fisheye::CALIB_RECOMPUTE_EXTRINSIC|fisheye::CALIB_FIX_SKEW|fisheye::CALIB_FIX_K1
 
 		cv::fisheye::calibrate(objectPoints, imagePoints[0], imageSize, cameraMatrix[0],
 		distCoeffs[0], rvecs, tvecs, fisheye::CALIB_RECOMPUTE_EXTRINSIC + fisheye::CALIB_CHECK_COND + fisheye::CALIB_FIX_SKEW+fisheye::CALIB_FIX_K4+fisheye::CALIB_FIX_K3+fisheye::CALIB_FIX_K2+fisheye::CALIB_FIX_K1 ,TermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5));
